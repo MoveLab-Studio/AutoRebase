@@ -1,6 +1,15 @@
 import {getInput, setFailed} from '@actions/core';
 import {context, GitHub} from '@actions/github';
-import EventPayloads from '../node_modules/@octokit/webhooks';
+// Define a minimal interface for the payload structure we need
+interface RepositoryPayload {
+    repository: {
+        owner: {
+            login: string;
+        };
+        name: string;
+    };
+}
+
 import {EligiblePullRequestsRetriever} from './EligiblePullRequests/eligiblePullRequestsRetriever';
 import {Rebaser} from './Rebaser/rebaser';
 import {TestableEligiblePullRequestsRetriever} from './EligiblePullRequests/testableEligiblePullRequestsRetriever';
@@ -27,10 +36,11 @@ async function run(): Promise<void> {
         const eligiblePullRequestsRetriever: EligiblePullRequestsRetriever = new TestableEligiblePullRequestsRetriever(
             openPullRequestsProvider,
         );
-        const rebaser = new Rebaser(new RealGithubRebase((github as unknown) as Octokit));
+        const rebaser = new Rebaser(new RealGithubRebase(github as unknown as Octokit));
         const labeler = new Labeler(openPullRequestsProvider, new GithubLabelPullRequestService(github));
 
-        const payload = context.payload as EventPayloads.WebhookPayloadPush;
+        // Using a typed interface for the payload
+        const payload = context.payload as RepositoryPayload;
 
         const ownerName = payload.repository.owner.login;
         const repoName = payload.repository.name;

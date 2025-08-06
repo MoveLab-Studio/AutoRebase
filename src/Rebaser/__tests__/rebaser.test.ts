@@ -2,7 +2,7 @@ import {Rebaser} from '../rebaser';
 import {GithubRebase} from '../githubRebase';
 
 class TestGithubRebase implements GithubRebase {
-    result: Promise<string> = Promise.reject();
+    result: Promise<string> = Promise.resolve('Default success');
 
     rebasePullRequest(owner: string, pullRequestNumber: number, repo: string): Promise<string> {
         return this.result;
