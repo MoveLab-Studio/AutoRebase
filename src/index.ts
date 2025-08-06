@@ -60,6 +60,18 @@ async function run(): Promise<void> {
             `Rate limit at end: ${JSON.stringify(endLimit)} (~${startLimit.remaining - endLimit.remaining} requests*)`,
         );
     } catch (e) {
+        // Log detailed error information for debugging
+        debug(`Error in AutoRebase action: ${String(e)}`);
+        debug(`Full error details: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`);
+
+        // Log the stack trace if available
+        if (e instanceof Error && e.stack) {
+            debug(`Stack trace: ${e.stack}`);
+        }
+
+        // Log additional context about what was happening when the error occurred
+        debug(`Error occurred during AutoRebase action execution. Check logs above for context.`);
+
         setFailed(e);
     }
 }
