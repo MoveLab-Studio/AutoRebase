@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug Fixes
+
+- Added handling for "Reference does not exist" error during rebasing to prevent action failures when a reference (branch or commit) no longer exists
+
 ## v0.2.0 (2025-08-05)
 
 ### Dependencies Updated

@@ -81,6 +81,33 @@ test('Failing rebase due to head base change completes successfully', async () =
     expect(error).toBeNull();
 });
 
+test('Failing rebase due to reference not existing completes successfully', async () => {
+    /* Given */
+    testGithubRebase.result = Promise.reject('HttpError: Reference does not exist');
+
+    let error = null;
+
+    /* When */
+    try {
+        await rebaser.rebasePullRequests([
+            {
+                ownerName: 'owner',
+                repoName: 'repo',
+                number: 3,
+                draft: false,
+                rebaseable: true,
+                mergeableState: 'behind',
+                labels: [],
+            },
+        ]);
+    } catch (e) {
+        error = e;
+    }
+
+    /* Then */
+    expect(error).toBeNull();
+});
+
 test('Failing rebase due unknown failure errors', async () => {
     /* Given */
     testGithubRebase.result = Promise.reject('Some unknown error');
