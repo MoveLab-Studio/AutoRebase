@@ -30,6 +30,10 @@ export class Rebaser {
                 warning(`Rebase aborted because the head branch changed for ${JSON.stringify(pullRequest)}`);
                 return;
             }
+            if (String(e).includes('Reference does not exist')) {
+                warning(`Reference does not exist for ${JSON.stringify(pullRequest)}. The branch may have been deleted or modified.`);
+                return;
+            }
             throw new Error(`Error while rebasing for ${JSON.stringify(pullRequest)}: ${String(e)}`);
         }
     }
