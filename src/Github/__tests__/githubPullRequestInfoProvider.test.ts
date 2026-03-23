@@ -91,4 +91,45 @@ describe('The pull request info is retried', () => {
         /* Then */
         expect(result.mergeableState).toBe('unknown');
     });
+
+    it('when rebaseable is null', async () => {
+        /* Given */
+        getPullRequestService.results.push({
+            draft: false,
+            rebaseable: null,
+            mergeableState: 'behind',
+            labels: [],
+        });
+
+        getPullRequestService.results.push({
+            draft: false,
+            rebaseable: true,
+            mergeableState: 'behind',
+            labels: [],
+        });
+
+        /* When */
+        const result = await provider.pullRequestInfoFor('owner', 'repo', 3);
+
+        /* Then */
+        expect(result.rebaseable).toBe(true);
+    });
+
+    it('when rebaseable is null after max retries, defaults to false', async () => {
+        /* Given */
+        for (let i = 0; i < 10; i++) {
+            getPullRequestService.results.push({
+                draft: false,
+                rebaseable: null,
+                mergeableState: 'behind',
+                labels: [],
+            });
+        }
+
+        /* When */
+        const result = await provider.pullRequestInfoFor('owner', 'repo', 3);
+
+        /* Then */
+        expect(result.rebaseable).toBe(false);
+    });
 });
